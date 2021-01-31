@@ -62,8 +62,7 @@ having to download the code and run it.
 
 ---
 
-Way back in [session 1 of Hackschool](https://github.com/uclaacm/hackschool-f20/tree/main/session-1-intro-to-html-css),
-we learned that when you type a URL in the browser and press "Enter", your
+When you type a URL in the browser and press "Enter", your
 computer makes a request to a server to get the files for the webpage.
 
 Let's see an example! Imagine that we want to look at the

@@ -11,7 +11,7 @@
 
 <!-- omit in toc -->
 ## What we'll be learning today
-- [What you'll need for this workshop:](#what-youll-need-for-this-workshop)
+- [What you'll need for this workshop](#what-youll-need-for-this-workshop)
 - [What is a Server?](#what-is-a-server)
 - [HTTP](#http)
   - [HTTP Requests](#http-requests)
@@ -29,7 +29,7 @@
   - [POST request](#post-request)
 
 
-## What you'll need for this workshop:
+## What you'll need for this workshop
 If you want to follow along with this workshop, it will be helpful to have the
 following:
 - basic JavaScript knowledge (see the HOTH 8 workshop on HTML/CSS/JS, but feel
@@ -37,79 +37,63 @@ following:
 - some familiarity with the command line, just enough to navigate around with
   `cd`
 - a code editor (like [VSCode](https://code.visualstudio.com/))
-- [Postman](https://www.postman.com/) (no account necessary, just download the app)
-- [Node](https://nodejs.org/en/) (you'll need this in order to write and run a
-  server in JavaScript)
+- [Postman](https://www.postman.com/downloads/) (no account necessary, just
+  download the app)
+- [Node.js](https://nodejs.org/en/) (you'll need this in order to write and run
+  a server in JavaScript)
 
 ## What is a Server?
 
-Say we made a website called Instascam, and wanted to show our friends. We
-could run the code on our computer and show it to them. However, we are being
-responsible and socially distancing, so we'll have to use another method.
-
-Another possibility could be sending them all the code through email, Google
-Drive, or even GitHub. However, this is inconvenient for a number of reasons.
-First, our source code might be pretty large, and it would be a hassle to send
-it to them for them to download. We'd also need to give them instructions on
-how to run the project, which might require them to install a bunch of stuff.
-
-How can we work around this issue? We can put our code on a **server**!
-(Remember, a server is really just a computer.) This way, all we need to do is
-give our friends the URL, and they can request the site from the server without
-having to download the code and run it.
-
-![](images/client_server.png)
-
----
-
-When you type a URL in the browser and press "Enter", your
-computer makes a request to a server to get the files for the webpage.
-
-Let's see an example! Imagine that we want to look at the
-[UCLA Memes for Sick AfTweens FB group](https://www.facebook.com/groups/UCLAmemes/)
-to laugh about the pain of midterms/finals. When we click on the link to the
-page, our computer makes a **request** to some Facebook server, and the server
-responds with all the information required to display the page. Now, we can
-look at memes!
+Let's take a look at a well-known app like Facebook. Facebook hosts the
+well-known "[UCLA Memes for Sick AF
+Tweens](https://www.facebook.com/groups/uclamemes)" group, where individual
+users can share memes with the entire UCLA community. However, how does it
+actually work? How do we bring the meme image (that previously existed only as
+a file on a student's computer) online and available for everyone to see?
 
 ![](images/fbgroup.png)
 
-However, the Facebook server allows us to do more than just look at memes. Maybe
-we're procrastinating on studying for finals, and have made a meme instead with
-our valuable time. We can actually upload this meme to Facebook by sending it
-over to the Facebook server. Now, if someone else requests the page from the
-server, they'll see our meme!
+One solution is using a **server**. The author of the meme can send the meme
+image to a single computer known as the "server" that stores all the memes in
+every single Facebook group. In the mean time, other students can retrieve only
+those memes that are relevant to them (in this case, UCLA memes) by talking to
+the server.
 
-![](images/fbpost.png)
+![A "server" computer in the center and many "client" computers scattered
+across connected to the server. The server stores all the memes and sends only
+a few memes to each client.](images/client_server.svg)
 
----
+A server could be really helpful for a hackathon project, if you want
 
-In this example, we saw two ways that the client (our computer) can communicate
-with the server (a Facebook server). We can get memes from the server, and we
-can also send memes to the server.
+- To have multiple users of your app interact, and/or
+- (_if you are making a web app_) To make your website accessible to everyone
+  in the world.
 
-In a world with millions (or more) of computers needing to communicate
-seamlessly with each other, how do we do it? Do computers send messages in
-Spanish? In Morse code? What do they put inside of the message? How can we
-ensure that the recipient of the message will understand what's being sent?
+In particular, servers can be really useful for both **web apps**, **mobile
+apps** (iOS, Android), and even **games** that have an online component (like
+an in-game chat, for instance).
 
-All of these questions imply that we need some sort of standardized way of
-communicating between computers, and this is why we have HTTP.
+Now, of course popular applications like Facebook and Google require a LOT of
+servers to keep running, because we can't really build a single computer
+powerful enough to talk to all the clients in the world. But for today, we will
+just have one computer (your computer!) act as a server, which likely will be
+more than enough to allow your hackathon project to work ☺
 
 ## HTTP
 
-The HyperText Transfer Protocol (HTTP) is the standard way for computers to
-communicate with each other on the Web. A "protocol" can be likened to a natural
-language: it's a set of rules that the server and client can both follow to
-communicate.
- 
+We now know that we can make computers talk to each other. But how does that
+work? The answer is something called HTTP. The HyperText Transfer Protocol
+(HTTP) is the standard way for computers to communicate with each other on the
+Web. A "protocol" can be likened to a natural language: it's a set of rules
+that the server and client can both follow to communicate.
+
 ### HTTP Requests
 
 In HTTP, the general flow is that the client (your laptop or cell phone) would
 first send a _request_ message to the server, asking for some resource.
 
 For
-instance, when you type `https://hack.uclaacm.com/` into the browser's
+instance, when you type `https://hoth.uclaacm.com/` into the browser's
 navigation box and hit <kbd>Enter</kbd>, the browser would send an HTTP request
 on your behalf to the server. Another example is uploading a meme: the browser
 would send an HTTP request to the server with the meme attached. The browser
@@ -268,7 +252,7 @@ and useful. So, Node.js was created!
 With Node.js, we can now run JavaScript code on our own computers, even if we're
 not using a web browser and even without an internet connection! Node.js uses
 the same technology inside our web browsers to make JavaScript work outside the
-browser! This was a huge breakthrough for JavaScript, because it meant that 
+browser! This was a huge breakthrough for JavaScript, because it meant that
 we could also use JavaScript for our servers!
 
 Instead of this:
@@ -286,11 +270,10 @@ available on both the frontend and the backend. If we were to use a different
 language in the backend, we would have to look for tools written for that
 language, too.
 
-## Express
+## Express.js
 
 Node.js provides the _capability_ of making an HTTP server in JavaScript.
-Express is a tool that makes doing so _easy._ (Much like how React makes
-building the frontend easy.)
+Express is a tool that makes doing so _easy._
 
 ## Demo
 

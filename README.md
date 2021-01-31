@@ -11,6 +11,7 @@
 
 <!-- omit in toc -->
 ## What we'll be learning today
+- [What you'll need for this workshop:](#what-youll-need-for-this-workshop)
 - [What is a Server?](#what-is-a-server)
 - [HTTP](#http)
   - [HTTP Requests](#http-requests)
@@ -23,8 +24,22 @@
 - [Express](#express)
 - [Demo](#demo)
   - [Plain Text Response](#plain-text-response)
-  - [HTML Response](#html-response)
+  - [Serving Static Files](#serving-static-files)
+  - [JSON response](#json-response)
   - [POST request](#post-request)
+
+
+## What you'll need for this workshop:
+If you want to follow along with this workshop, it will be helpful to have the
+following:
+- basic JavaScript knowledge (see the HOTH 8 workshop on HTML/CSS/JS, but feel
+  free to skip straight to the JS portion)
+- some familiarity with the command line, just enough to navigate around with
+  `cd`
+- a code editor (like [VSCode](https://code.visualstudio.com/))
+- [Postman](https://www.postman.com/) (no account necessary, just download the app)
+- [Node](https://nodejs.org/en/) (you'll need this in order to write and run a
+  server in JavaScript)
 
 ## What is a Server?
 
@@ -86,15 +101,15 @@ communicating between computers, and this is why we have HTTP.
 
 The HyperText Transfer Protocol (HTTP) is the standard way for computers to
 communicate with each other on the Web. A "protocol" can be likened to a natural
-language: it's a notation that the server and client can both understand and
-speak. The name also has "HyperText" in it, which may remind you of HTML – the
-HyperText Markup Language. Indeed, HTTP was invented around the same time as
-HTML, its main original purpose being to allow transfers of HTML files.
-
+language: it's a set of rules that the server and client can both follow to
+communicate.
+ 
 ### HTTP Requests
 
 In HTTP, the general flow is that the client (your laptop or cell phone) would
-first send a _request_ message to the server, asking for some resource. For
+first send a _request_ message to the server, asking for some resource.
+
+For
 instance, when you type `https://hack.uclaacm.com/` into the browser's
 navigation box and hit <kbd>Enter</kbd>, the browser would send an HTTP request
 on your behalf to the server. Another example is uploading a meme: the browser
@@ -175,8 +190,7 @@ We see that first line has been changed to reflect the POST method. The
 headers: `Content-Type` and `Content-Length`. These two have to do with the
 characteristics of the body we send.
 
-In this example, we are sending a JSON object to the server ([remember
-JSON?](https://github.com/uclaacm/hackschool-f20/tree/main/session-5-async-and-web-APIs#json-vs-javascript-objects)),
+In this example, we are sending a JSON object to the server,
 and that's why we have `application/json` as the `Content-Type`. The
 `Content-Length` is the number of bytes/characters in the body.
 
@@ -279,29 +293,37 @@ Node.js provides the _capability_ of making an HTTP server in JavaScript.
 Express is a tool that makes doing so _easy._ (Much like how React makes
 building the frontend easy.)
 
-To create a new npm project in the current directory, run the following in your 
-terminal
+## Demo
+
+Create a new folder, which will contain the server we write. Navigate to the
+folder in your command line and run the following:
+
 ```sh
 npm init
 ```
 
-To install Express, run:
+When prompted, click "Enter" to go through the prompts until the command is
+finshed. This will create a new npm project in the current directory. Then,
+run:
+
 ```sh
 npm install express
 ```
 
-## Demo
+This will install express, allowing us to use it to create our server!
 
 ### Plain Text Response
 
 We first create a skeleton app, by putting the following in `index.js`:
 ```js
+"use strict";                              // Helps prevent typos:
+                                           // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Strict_mode
 const express = require("express");        // Indicates that your app needs Express
                                            //
 const app = express();                     // Create a new Express app
                                            //
 //  vvv this means it's a GET request      //
-app.get("/hello", (request, response) => { // Defines what to do when the user makes
+app.get("/joke", (request, response) => {  // Defines what to do when the user makes
                                            // a GET /hello request. We receive info
                                            // about the request and also a response
                                            // to write our data into.
@@ -309,7 +331,8 @@ app.get("/hello", (request, response) => { // Defines what to do when the user m
   response.setHeader("Content-Type",       // We set the Content-Type header to
                      "text/plain");        // plain unformatted text.
                                            //
-  response.send("Hello world!");           // Send the response.
+  response.send("What happens to a frog's car when it breaks down? It gets toad away.");
+                                           // Send the response.
 });                                        //
                                            //
 app.listen(3000);                          // 3000 is a number we call the _port_.
@@ -323,51 +346,106 @@ To run this app, execute:
 node index.js
 ```
 
-Now, go to http://localhost:3000/hello, and you should see "Hello world!" in a
-monospace/typewriter font, indicating that the browser received a plain text
-response. The 3000 number corresponds with what you called `app.listen()` with.
-The `localhost` part of the URL refers to your own computer as the server host.
+Now, go to http://localhost:3000/joke, and you should see "What happens to a
+frog's car when it breaks down? It gets toad away." in a monospace/typewriter
+font, indicating that the browser received a plain text response. The 3000
+number corresponds with what you called `app.listen()` with. The `localhost`
+part of the URL refers to your own computer as the server host.
 
-### HTML Response
+### Serving Static Files
 
 Okay, that works, but isn't very interesting. Can we send an HTML file to the
 client?
 
-Add the following to `index.js`, **after** `const app` but **before**
+Let's create a `public` folder in our project and add a file called `joke.html`
+with the following contents:
+
+```html
+<!DOCTYPE html>
+What happens to a frog's car when it breaks down? It gets <em>toad away</em>.
+```
+
+Now, add the following to `index.js`, **after** `const app` but **before**
 `app.listen()`:
 
 ```js
-app.get("/hello-html", (request, response) => {
-  response.setHeader("Content-Type", "text/html");
-  response.send("Hello, <strong>world</strong>!");
+app.use(express.static("public"));
+```
+
+Go to http://localhost:3000/joke.html. Oh no! There was an error :(
+
+This is because we need to **restart** the server: type Ctrl-C (same for Mac
+users), and then `node index.js` again.
+
+Navigate to http://localhost:3000/joke.html, and you should see the joke with
+extra _emphasis_.
+
+This is often useful for serving images.
+
+### JSON response
+
+Let's create an endpoint where we can see a bunch of jokes, represented in JSON
+format.
+
+First, let's add some jokes to our server. Add the following lines to
+`index.js` after the `const app = express();` line:
+
+```js
+const jokes = ["What happens to a frog's car when it breaks down? It gets toad away",
+               "Why was six scared of seven? Because seven 'ate' nine.",
+               "What starts with E, ends with E, and has only 1 letter in it? Envelope :D"];
+```
+
+Now, let's create an endpoint to see all the jokes we have on the server:
+```js
+app.get("/all", (request, response) => {
+  const jokesRes = [];
+  for (let i = 0; i < jokes.length; i++) {
+    jokesRes.push({
+      id: i,
+      text: jokes[i],
+    });
+  }
+  response.json(jokesRes);
 });
 ```
 
-**Important**: Now, restart the server by typing Ctrl-C (same for Mac users),
-and then `node index.js` again.
+What is this code doing? We first create an empty array `jokesRes`, which we
+then populate with JS objects corresponding to each joke. These objects each
+contain an `id` number as well as the joke itself. Finally, we send the
+resulting array as a JSON response.
 
-Navigate to http://localhost:3000/hello-html, and you should see "Hello,
-**world**!"
+We can see the result of this by visiting http://localhost:3000/all after
+restarting the server.
 
-> Question: What would the output be if we had said instead:
->
-> ```js
-> response.setHeader("Content-Type", "text/plain");
-> ```
->
-> <details><summary>Answer</summary>
->
-> You should see the text
-> ```
-> Hello, <strong>world</strong>!
-> ```
-> without any formatting.
->
-> </details>
+Now, we can try to write an endpoint to retrieve a specific joke by id. To do
+this, we can use a "route parameter". Add this to your code:
+
+```js
+app.get("/joke/:id", (request, response) => {
+  const jokeID = Number(request.params.id);
+  if (isNaN(jokeID) || jokeID < 0 || jokeID >= jokes.length) {
+    response.setHeader("Content-Type", "text/plain;charset=utf-8");
+    response.status(404);
+    response.send("Joke not found 😢");
+    return;
+  }
+
+  response.json({
+    id: jokeID,
+    text: jokes[jokeID],
+  })
+});
+```
+
+We access the `id` by using `request.params.id`, and convert it to a number
+using `Number()`. If the `id` is NaN (not a number), or is too big or small,
+then we return a `404` error. Otherwise, we send the corresponding joke along
+with the `id` back to the client.
 
 ### POST request
 
-Let's say we now want to create a POST endpoint where users can upload memes
+Let's say we now want to create a POST endpoint where users can upload jokes
 in JSON format. The request body can be accessed through `request.body`.
 That property is a bit hard to use though, since it is a stream of
 bytes rather than the parsed JSON object.
@@ -377,30 +455,33 @@ _middleware_ to decode the JSON for us. We will also send a JSON object back
 to the user. We can use it like this:
 ```js
 //  vvvv notice how we changed this from `get` to `post`
-app.post("/upload", express.json(), (request, response) => {
-  if (!request.body) {
+app.post("/joke", express.json(), (request, response) => {
+  if (!request.body || !request.body.text) {
     response.setHeader("Content-Type", "text/plain");
     response.status(400);
-    response.send("Invalid request body")
+    response.send("Invalid request body");
     return;
   }
-  response.send({
-    status: "We have received your meme",
-    meme: request.body,
+
+  const id = jokes.length;
+  jokes.push(request.body.text);
+  response.json({
+    status: "We have received your joke",
+    id,
+    text: request.body.text,
   });
 });
 ```
 
-We can test it by running the following in browser DevTools:
-```js
-response = await fetch("/upload", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-  },
-  body: JSON.stringify({
-    url: 'https://www.facebook.com/groups/zoommemes/permalink/482785366077607/',
-  }),
-});
-console.log(await response.json());
-```
+We can test it by sending a request in Postman like this:
+
+![](images/postman_request.png)
+
+The response should look something like:
+
+![](images/postman_response.png)
+
+---
+
+To see all of the code we wrote, check out the demo folder above! Good luck
+and feel free to ask any questions you have on Discord :)

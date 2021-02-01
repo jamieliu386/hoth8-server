@@ -8,7 +8,6 @@
 
 - [Slides](https://docs.google.com/presentation/d/1h6KdlwfDfh8SBBBxGMGJb0OhJ5vSLsI2L9Zz3Yn7BR0/edit#slide=id.gb62b40d382_0_5)
 
-
 <!-- omit in toc -->
 ## What we'll be learning today
 - [What you'll need for this workshop](#what-youll-need-for-this-workshop)
